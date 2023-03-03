@@ -13,4 +13,14 @@ public class Target : MonoBehaviour
     {
         transform.RotateAround(pivotObject.transform.position, new Vector3(0, 1, 0), rotationSpeed * Time.deltaTime);
     }
+
+    public void OnTriggerEnter(Collider collision)
+    {
+        GameObject gameObj = collision.gameObject;
+        if(gameObj.tag == "Bullet")
+        {
+            Destroy(gameObject);
+            Debug.Log("Score");
+        }
+    }
 }
