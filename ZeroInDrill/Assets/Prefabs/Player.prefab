@@ -115,7 +115,9 @@ MonoBehaviour:
   mouseSensitivity: 1000
   scrollSensitivity: 0.5
   playerBody: {fileID: 7234615793353340046}
-  bullet: {fileID: -5580484812695724312, guid: 7a527861426881645be8fb8dddb30f6d, type: 3}
+  bullet: {fileID: 1728938039113650553, guid: 7a527861426881645be8fb8dddb30f6d, type: 3}
+  cooldown: 1
+  inCoolDown: 0
 --- !u!1 &5648608061392982555
 GameObject:
   m_ObjectHideFlags: 0

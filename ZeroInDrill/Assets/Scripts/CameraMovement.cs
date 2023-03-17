@@ -7,7 +7,7 @@ public class CameraMovement : MonoBehaviour
     public float mouseSensitivity = 1000f;
     public float scrollSensitivity = 0.5f;
     public Transform playerBody;
-    public Rigidbody bullet;
+    public GameObject bullet;
     public float cooldown = 1f;
     public bool inCoolDown = false;
 
@@ -80,9 +80,8 @@ public class CameraMovement : MonoBehaviour
 
     public void shoot()
     {
-        Rigidbody clone;
+        GameObject clone;
         clone = Instantiate(bullet, transform.position, transform.rotation);
-        clone.velocity = transform.TransformDirection(Vector3.forward * 10);
 
     }
 
