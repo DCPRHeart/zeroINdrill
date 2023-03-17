@@ -6,10 +6,11 @@ public class BulletMove : MonoBehaviour
 {
     public float despawnAfter = 5;
     public float speed = 10;
-    public float direction;
+    public Vector3 direction;
     // Start is called before the first frame update
     void Start()
     {
+        
         StartCoroutine(Despawn());
     }
     IEnumerator Despawn()
