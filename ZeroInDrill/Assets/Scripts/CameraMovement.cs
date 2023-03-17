@@ -11,6 +11,7 @@ public class CameraMovement : MonoBehaviour
     public float cooldown = 1f;
     public bool inCoolDown = false;
 
+    private bool isMoving = false;
     float xRotation = 0f;
     float yRotation = 0f;
     float height;
@@ -42,15 +43,39 @@ public class CameraMovement : MonoBehaviour
             StartCoroutine(shootCooldown());
         }
 
-        if(Input.GetAxis("Mouse ScrollWheel") > 0)
+       if (Input.GetAxis("Mouse ScrollWheel") > 0 && transform.position.y < 10)
         {
-            height += scrollSensitivity;
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            height -= scrollSensitivity;
-        }
-        transform.position = new Vector3(0, height, 0);
+            //Vector3 currentPosition = transform.position;
+            //transform.position = Vector3.Lerp(currentPosition, new Vector3(0, 10, 0), scrollSensitivity/10);
+            //height += scrollSensitivity;
+            //isMoving = true;
+            //StartCoroutine(movingTime());
+            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(0, 10, 0), scrollSensitivity * Time.deltaTime);
+            moveUp();
+       }
+       if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.y >0)
+       {
+            //Vector3 currentPosition = transform.position;
+            // transform.position = Vector3.Lerp(currentPosition, Vector3.zero, scrollSensitivity / 10);
+            //height -= scrollSensitivity;
+            //isMoving = true;
+            //StartCoroutine(movingTime());
+            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(0, 0, 0), scrollSensitivity * Time.deltaTime);
+            moveDown();
+       }
+        
+        //transform.position = new Vector3(0, height, 0);
+    }
+
+    public void moveUp()
+    {
+        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 10, 0), scrollSensitivity * Time.deltaTime);
+    }
+
+    public void moveDown()
+    {
+        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 0, 0), scrollSensitivity * Time.deltaTime);
+
     }
 
     public void shoot()
@@ -66,5 +91,11 @@ public class CameraMovement : MonoBehaviour
         yield return new WaitForSeconds(cooldown);
         inCoolDown = false;
 
+    }
+
+    IEnumerator movingTime()
+    {
+        yield return new WaitForSeconds(scrollSensitivity * Time.deltaTime);
+        isMoving = false;
     }
 }

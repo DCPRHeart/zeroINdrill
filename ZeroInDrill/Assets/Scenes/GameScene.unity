@@ -15109,6 +15109,10 @@ PrefabInstance:
       propertyPath: playerBody
       value: 
       objectReference: {fileID: 2088824706}
+    - target: {fileID: 6623706980961195151, guid: d72ba69d7208cd146b6aa840bc4aa926, type: 3}
+      propertyPath: scrollSensitivity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7234615793353340046, guid: d72ba69d7208cd146b6aa840bc4aa926, type: 3}
       propertyPath: m_RootOrder
       value: 2
