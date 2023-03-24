@@ -7,9 +7,12 @@ public class CameraMovement : MonoBehaviour
     public float mouseSensitivity = 1000f;
     public float scrollSensitivity = 0.5f;
     public Transform playerBody;
+    public Transform playerCam;
     public GameObject bullet;
     public float cooldown = 1f;
     public bool inCoolDown = false;
+    public GameObject point1;
+    public GameObject point2;
 
     private bool isMoving = false;
     float xRotation = 0f;
@@ -19,6 +22,7 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        this.transform.position = point1.transform.position;
     }
 
     // Update is called once per frame
@@ -43,24 +47,12 @@ public class CameraMovement : MonoBehaviour
             StartCoroutine(shootCooldown());
         }
 
-       if (Input.GetAxis("Mouse ScrollWheel") > 0 && transform.position.y < 10)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && isMoving != true) //move up
         {
-            //Vector3 currentPosition = transform.position;
-            //transform.position = Vector3.Lerp(currentPosition, new Vector3(0, 10, 0), scrollSensitivity/10);
-            //height += scrollSensitivity;
-            //isMoving = true;
-            //StartCoroutine(movingTime());
-            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(0, 10, 0), scrollSensitivity * Time.deltaTime);
             moveUp();
        }
-       if (Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.y >0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0 && isMoving != true)
        {
-            //Vector3 currentPosition = transform.position;
-            // transform.position = Vector3.Lerp(currentPosition, Vector3.zero, scrollSensitivity / 10);
-            //height -= scrollSensitivity;
-            //isMoving = true;
-            //StartCoroutine(movingTime());
-            //transform.position = Vector3.MoveTowards(transform.position, new Vector3(0, 0, 0), scrollSensitivity * Time.deltaTime);
             moveDown();
        }
         
@@ -69,20 +61,41 @@ public class CameraMovement : MonoBehaviour
 
     public void moveUp()
     {
-        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 10, 0), scrollSensitivity * Time.deltaTime);
+        if(this.transform.position == point2.transform.position)
+        {
+            isMoving = false;
+
+        }
+        else
+        {
+            isMoving = true;
+            this.transform.position = Vector3.MoveTowards(this.transform.position, point2.transform.position, scrollSensitivity * Time.deltaTime);
+        }
     }
 
     public void moveDown()
     {
-        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 0, 0), scrollSensitivity * Time.deltaTime);
+        if (this.transform.position == point1.transform.position)
+        {
+            isMoving = false;
 
+        }
+        else
+        {
+            isMoving = true;
+            this.transform.position = Vector3.MoveTowards(this.transform.position, point1.transform.position, scrollSensitivity * Time.deltaTime);
+        }
     }
 
     public void shoot()
     {
-        GameObject clone;
-        clone = Instantiate(bullet, transform.position, transform.rotation);
+        RaycastHit hit;
 
+        if (Physics.Raycast(playerCam.transform.position, transform.forward, out hit, 10f))
+        {
+            Destroy(hit.transform.gameObject);
+
+        }
     }
 
     IEnumerator shootCooldown()
