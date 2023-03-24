@@ -7,12 +7,9 @@ public class CameraMovement : MonoBehaviour
     public float mouseSensitivity = 1000f;
     public float scrollSensitivity = 0.5f;
     public Transform playerBody;
-    public Transform playerCam;
     public GameObject bullet;
     public float cooldown = 1f;
     public bool inCoolDown = false;
-    public GameObject point1;
-    public GameObject point2;
 
     private bool isMoving = false;
     float xRotation = 0f;
@@ -22,7 +19,6 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        this.transform.position = point1.transform.position;
     }
 
     // Update is called once per frame
@@ -47,55 +43,27 @@ public class CameraMovement : MonoBehaviour
             StartCoroutine(shootCooldown());
         }
 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0 && isMoving != true) //move up
-        {
-            moveUp();
-       }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && isMoving != true)
-       {
-            moveDown();
-       }
+       
         
         //transform.position = new Vector3(0, height, 0);
     }
 
     public void moveUp()
     {
-        if(this.transform.position == point2.transform.position)
-        {
-            isMoving = false;
-
-        }
-        else
-        {
-            isMoving = true;
-            this.transform.position = Vector3.MoveTowards(this.transform.position, point2.transform.position, scrollSensitivity * Time.deltaTime);
-        }
+        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 10, 0), scrollSensitivity * Time.deltaTime);
     }
 
     public void moveDown()
     {
-        if (this.transform.position == point1.transform.position)
-        {
-            isMoving = false;
+        transform.position = Vector3.Lerp(transform.position, new Vector3(0, 0, 0), scrollSensitivity * Time.deltaTime);
 
-        }
-        else
-        {
-            isMoving = true;
-            this.transform.position = Vector3.MoveTowards(this.transform.position, point1.transform.position, scrollSensitivity * Time.deltaTime);
-        }
     }
 
     public void shoot()
     {
-        RaycastHit hit;
+        GameObject clone;
+        clone = Instantiate(bullet, transform.position, transform.rotation);
 
-        if (Physics.Raycast(playerCam.transform.position, transform.forward, out hit, 10f))
-        {
-            Destroy(hit.transform.gameObject);
-
-        }
     }
 
     IEnumerator shootCooldown()
