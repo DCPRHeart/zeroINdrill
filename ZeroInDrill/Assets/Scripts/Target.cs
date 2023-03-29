@@ -9,7 +9,6 @@ public class Target : MonoBehaviour
     public float rotationSpeed;
     public GameObject pivotObject;
     public GameObject indicator;
-    public SceneManager manager;
 
     public AudioSource breakSound;
     public ParticleSystem breakEffect;
@@ -62,9 +61,8 @@ public class Target : MonoBehaviour
         GameObject gameObj = collision.gameObject;
         if(gameObj.tag == "Bullet" && !destroyed)
         {
-            Debug.Log(manager);
-            manager.updateScore(10);
             Destroyed();
+            Debug.Log("Score");
         }
     }
     void Destroyed()
