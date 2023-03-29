@@ -8,6 +8,7 @@ public class CameraMovement : MonoBehaviour
     public float scrollSensitivity = 0.5f;
     public Transform playerBody;
     public GameObject bullet;
+    public SceneManager manager;
     public float cooldown = 1f;
     public bool inCoolDown = false;
 
@@ -36,9 +37,10 @@ public class CameraMovement : MonoBehaviour
         playerBody.Rotate(Vector3.up * mouseX);
         //playerBody.Rotate(Vector3.right * mouseY);
 
-        if (Input.GetKey(KeyCode.Mouse0) && !inCoolDown)
+        if (Input.GetKey(KeyCode.Mouse0) && !inCoolDown && manager.getInGame())
         {
             shoot();
+            manager.decrementShot();
             inCoolDown = true;
             StartCoroutine(shootCooldown());
         }
@@ -63,7 +65,6 @@ public class CameraMovement : MonoBehaviour
     {
         GameObject clone;
         clone = Instantiate(bullet, transform.position, transform.rotation);
-
     }
 
     IEnumerator shootCooldown()
