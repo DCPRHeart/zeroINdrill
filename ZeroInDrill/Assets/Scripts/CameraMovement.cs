@@ -33,7 +33,7 @@ public class CameraMovement : MonoBehaviour
         
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
         playerBody.Rotate(Vector3.up * mouseX);
         //playerBody.Rotate(Vector3.right * mouseY);
 
