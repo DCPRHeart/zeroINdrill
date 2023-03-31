@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1490186548904658714}
   - component: {fileID: 433411936618476210}
   - component: {fileID: 6623706980961195151}
+  - component: {fileID: 2088824711}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -113,11 +114,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 1000
-  scrollSensitivity: 0.5
+  scrollSensitivity: 10
   playerBody: {fileID: 7234615793353340046}
   bullet: {fileID: 1728938039113650553, guid: 7a527861426881645be8fb8dddb30f6d, type: 3}
+  manager: {fileID: 0}
   cooldown: 1
   inCoolDown: 0
+--- !u!1773428102 &2088824711
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486648761495281246}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets:
+  - {x: 0, y: 0.5, z: 0}
+  m_RotationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 0
+  m_AffectRotationY: 0
+  m_AffectRotationZ: 0
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 0}
+    weight: 1
 --- !u!1 &5648608061392982555
 GameObject:
   m_ObjectHideFlags: 0
