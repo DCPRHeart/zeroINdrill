@@ -11,25 +11,30 @@ public class SceneManager : MonoBehaviour
     public TMPro.TMP_Text scoreLabel;
     public TMPro.TMP_Text shotsLabel;
     public TMPro.TMP_Text timeLabel;
+    public TMPro.TMP_Text infoLabel;
 
+    private GameObject playerPlatformObject;
     private GameObject playerObject;
+    private PlatformMove platformScript;
     private GameObject currentLevelObject;
     private bool inGame = false;
+    private bool inLevel = false;
     private float timeLeft = -1;
+    private float levelCountdown = -1;
     private int shotsRemaining = -1;
     private int score = -1;
     private int scoreThreshold = -1;
+    private int level = 1;
 
     void Start() {
-        playerObject = Instantiate(Player, transform.position, transform.rotation);
-        playerObject.GetComponent<CameraMovement>().manager = this;
-        currentLevelObject = Instantiate(LevelOne, transform.position, transform.rotation);
-        currentLevelObject.GetComponent<LevelOneManager>().manager = this;
-        setLevel(60f, 10, 100);
+        playerPlatformObject = Instantiate(Player, transform.position, transform.rotation);
+        playerPlatformObject.transform.GetChild(1).gameObject.GetComponent<CameraMovement>().manager = this;
+        platformScript = playerPlatformObject.transform.GetChild(0).gameObject.GetComponent<PlatformMove>();
+        infoLabel.text = "Click to begin";
     }
 
     void Update() {
-        if(inGame) {
+        if(inLevel) {
             if(timeLeft > 0) {
                 timeLeft -= Time.deltaTime;
                 updateTimeLabel("Time: " + Mathf.FloorToInt(timeLeft));
@@ -38,9 +43,35 @@ public class SceneManager : MonoBehaviour
                 endLevel();
             }
         }
+        else {
+            if(inGame) {
+
+            }
+            else {
+                if (Input.GetKey(KeyCode.Mouse0)) {
+                    inGame = true;
+                    infoLabel.text = "Get Ready...";
+                    StartCoroutine(setLevel(60f, 10, 100));
+                }
+            }
+        }
     }
 
-    void setLevel(float totalTime, int totalShots, int levelScoreThreshold) {
+    IEnumerator setLevel(float totalTime, int totalShots, int levelScoreThreshold) {
+        yield return new WaitForSeconds(2f);
+
+        switch(level) {
+            case 1:
+                currentLevelObject = Instantiate(LevelOne, transform.position, transform.rotation);
+                currentLevelObject.GetComponent<LevelOneManager>().manager = this;
+                break;
+            case 2:
+                currentLevelObject = Instantiate(LevelOne, transform.position, transform.rotation);
+                currentLevelObject.GetComponent<LevelOneManager>().manager = this;
+                break;
+        }
+        
+        infoLabel.text = "";
         timeLeft = totalTime;
         updateTimeLabel("Time: " + timeLeft);
         shotsRemaining = totalShots;
@@ -48,28 +79,33 @@ public class SceneManager : MonoBehaviour
         scoreThreshold = levelScoreThreshold;
         score = 0;
         updateScoreLabel("Score: " + score);
-        inGame = true;
+        inLevel = true;
     }
 
     public void endLevel() {
-        inGame = false;
+        inLevel = false;
         timeLeft = -1;
         updateTimeLabel("");
         shotsRemaining = -1;
         updateShotsLabel("");
+        updateScoreLabel("");
         if(score >= scoreThreshold) {
-            //next level code
+            Debug.Log(platformScript.stage);
+            platformScript.stage = new Vector3(platformScript.stage.x, platformScript.stage.y + 50, platformScript.stage.z);
+            infoLabel.text = "Next Level...";
+            //level++;
         }
         else {
-            //game over code
+            infoLabel.text = "Game Over!";
+            level = 1;
+            inGame = false;
         }
         score = -1;
-        updateScoreLabel("");
         scoreThreshold = -1;
     }
 
     public bool getInGame() {
-        return inGame;
+        return inLevel;
     }
 
     public void updateScore(int addScore) {

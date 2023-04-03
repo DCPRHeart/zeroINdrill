@@ -62,7 +62,6 @@ public class Target : MonoBehaviour
         GameObject gameObj = collision.gameObject;
         if(gameObj.tag == "Bullet" && !destroyed)
         {
-            Debug.Log(manager);
             manager.updateScore(10);
             Destroyed();
         }

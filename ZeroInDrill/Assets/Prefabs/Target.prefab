@@ -211,9 +211,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37be839e85ead43a1a248f07c31c39e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 0
+  rotationSpeed: 25
   pivotObject: {fileID: 0}
   indicator: {fileID: 1790073528}
+  manager: {fileID: 0}
   breakSound: {fileID: 745643430647362531}
   breakEffect: {fileID: 2143859203}
   none: {fileID: 10758, guid: 0000000000000000f000000000000000, type: 0}
