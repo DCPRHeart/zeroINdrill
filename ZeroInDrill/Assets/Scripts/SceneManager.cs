@@ -21,7 +21,6 @@ public class SceneManager : MonoBehaviour
     private int scoreThreshold = -1;
 
     void Start() {
-        playerObject = Instantiate(Player, transform.position, transform.rotation);
         playerObject.GetComponent<CameraMovement>().manager = this;
         currentLevelObject = Instantiate(LevelOne, transform.position, transform.rotation);
         currentLevelObject.GetComponent<LevelOneManager>().manager = this;
