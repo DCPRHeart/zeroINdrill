@@ -64,7 +64,7 @@ public class CameraMovement : MonoBehaviour
     public void shoot()
     {
         GameObject clone;
-        clone = Instantiate(bullet, transform.position, transform.rotation);
+        clone = Instantiate(bullet, transform.position + Vector3.up, transform.rotation);
     }
 
     IEnumerator shootCooldown()

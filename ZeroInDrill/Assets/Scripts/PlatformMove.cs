@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlatformMove : MonoBehaviour
 {
-    public Vector3 stage; //used to change stages
+    public Vector3 stage; //used to change stages #Determines the world space of the following
     public int levels = 1; //max distance from yLevel
     public int level = 0; //point from yLevel
     public float levelDiff = 2;
@@ -16,7 +16,7 @@ public class PlatformMove : MonoBehaviour
     {
         stage = this.transform.position;
     }
-    bool AtLevel()
+    public bool AtLevel()
     {
         if (Mathf.Abs(transform.position.y - ProperPos().y) < 0.1)
         {
