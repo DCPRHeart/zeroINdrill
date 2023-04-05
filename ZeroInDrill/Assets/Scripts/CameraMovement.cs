@@ -44,10 +44,6 @@ public class CameraMovement : MonoBehaviour
             inCoolDown = true;
             StartCoroutine(shootCooldown());
         }
-
-       
-        
-        //transform.position = new Vector3(0, height, 0);
     }
 
     public void moveUp()
