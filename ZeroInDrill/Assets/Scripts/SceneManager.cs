@@ -21,6 +21,7 @@ public class SceneManager : MonoBehaviour
     private GameObject currentLevelRing;
     private bool inGame = false;
     private bool inLevel = false;
+    private bool waiting = false;
     private float timeLeft = -1;
     private float levelTime = -1;
     private float levelCountdown = -1;
@@ -30,7 +31,10 @@ public class SceneManager : MonoBehaviour
     private int totalScore = 0;
     private int level = 1;
 
+    private AudioSource music;
+
     void Start() {
+        music = GetComponent<AudioSource>();
         playerPlatformObject = Instantiate(Player, transform.position, transform.rotation);
         playerPlatformObject.transform.GetChild(1).gameObject.GetComponent<CameraMovement>().manager = this;
         platformScript = playerPlatformObject.transform.GetChild(0).gameObject.GetComponent<PlatformMove>();
@@ -38,6 +42,8 @@ public class SceneManager : MonoBehaviour
     }
 
     void Update() {
+        if (waiting && Input.GetKeyDown(KeyCode.Mouse0))
+            waiting = false;
         if(inLevel) {
             if(timeLeft > 0) {
                 timeLeft -= Time.deltaTime;
@@ -64,42 +70,46 @@ public class SceneManager : MonoBehaviour
 
     IEnumerator setLevel(float totalTime, int totalShots, int levelScoreThreshold) {
         infoLabel.text = "Level " + level + ":\n Get " + levelScoreThreshold + " points to advance";
-        yield return new WaitForSeconds(5f);
-
-        switch(level) {
-            case 1:
-                currentLevelObject = Instantiate(LevelOne);
-                break;
-            case 2:
-                currentLevelObject = Instantiate(LevelOne);
-                break;
-            case 3:
-                currentLevelObject = Instantiate(LevelOne);
-                break;
-            case 4:
-                currentLevelObject = Instantiate(LevelOne);
-                break;
-            case 5:
-                currentLevelObject = Instantiate(LevelOne);
-                break;
+        StartCoroutine(setPlatformLevel());
+        yield return new WaitForSeconds(3f);
+        gameOverLabel.text = "";
+        if (level == 1 && !music.isPlaying){
+            music.Play();
         }
-
-        currentLevelObject.transform.position = playerPlatformObject.transform.GetChild(1).transform.position;
+        currentLevelObject = Instantiate(LevelOne);
+        currentLevelObject.transform.position = transform.position;
         currentLevelObject.GetComponent<LevelOneManager>().manager = this;
         currentLevelRing = Instantiate(LevelRing);
         currentLevelRing.transform.position = playerPlatformObject.transform.GetChild(1).transform.position;
         infoLabel.text = "";
+        scoreThreshold = levelScoreThreshold;
         timeLeft = totalTime;
+        score = 0;
         updateTimeLabel("Time: " + timeLeft);
         shotsRemaining = totalShots;
-        updateShotsLabel("Shots: " + shotsRemaining);
-        scoreThreshold = levelScoreThreshold;
-        score = 0;
-        updateScoreLabel("Score: " + score);
-                
-            
-        }
+        updateShotsLabel(shotsRemaining.ToString());
         
+        updateScoreLabel("Score: " + score);
+        StartCoroutine(nextPrompt());
+        
+    }
+    IEnumerator nextPrompt(string txt = "Click to Begin")
+    {
+        gameOverLabel.text = txt;
+        waiting = true;
+        yield return new WaitUntil(notWaiting);
+        gameOverLabel.text = "3";
+        yield return new WaitForSeconds(1);
+        gameOverLabel.text = "2";
+        yield return new WaitForSeconds(1);
+        gameOverLabel.text = "1";
+        yield return new WaitForSeconds(1);
+        gameOverLabel.text = "";
+        inLevel = true;
+    }
+    bool notWaiting()
+    {
+        return !waiting;
     }
 
     private IEnumerator setPlatformLevel() {
@@ -107,11 +117,10 @@ public class SceneManager : MonoBehaviour
         float iLerp = platformScript.lerpConstant;
         platformScript.speed = 0.0001f;
         platformScript.lerpConstant = 0.025f;
-        platformScript.stage = transform.position + Vector3.down * 1.25f;
+        platformScript.stage = transform.position + Vector3.down * 1.5f;
         yield return new WaitUntil(platformScript.AtLevel);
         platformScript.speed = iSpeed;
         platformScript.lerpConstant = iLerp;
-        inLevel = true;
     }
 
     public IEnumerator endLevel() {
@@ -125,12 +134,16 @@ public class SceneManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         
         if(score >= scoreThreshold) {
-            currentLevelObject.GetComponent<LevelOneManager>().deleteLevel();
-            Destroy(currentLevelObject.gameObject);
-            Destroy(currentLevelRing.gameObject);
-            platformScript.stage = new Vector3(platformScript.stage.x, platformScript.stage.y + 50, platformScript.stage.z);
+            if (currentLevelObject != null)
+            {
+                currentLevelObject.GetComponent<LevelOneManager>().deleteLevel();
+                Destroy(currentLevelObject.gameObject);
+                Destroy(currentLevelRing.gameObject);
+            }
+            this.transform.position += transform.up*50;
+            totalScore += score;
             level++;
-            switch(level) {
+            switch (level) {
             case 1:
                 StartCoroutine(setLevel(60f, 10, 150));
                 break;
@@ -148,17 +161,19 @@ public class SceneManager : MonoBehaviour
                 break;
             case 6:
                 inGame = false;
-                infoLabel.text = "You Win!\nClick to Play Again";
+                gameOverLabel.text = "Stage Complete!\n\n Score: " + totalScore.ToString();
                 break;
             }
         }
         else {
+            music.Stop();
             currentLevelObject.GetComponent<LevelOneManager>().deleteLevel();
             Destroy(currentLevelObject.gameObject);
             Destroy(currentLevelRing.gameObject);
-            infoLabel.text = "Game Over! \nClick to Play Again";
+            infoLabel.text = "";
+            gameOverLabel.text = "Game Over! \nClick to Play Again\n\n Score: " + totalScore.ToString();
             level = 1;
-            platformScript.stage = new Vector3(0, 0, 0);
+            this.transform.position = Vector3.zero;
             inGame = false;
         }
         
