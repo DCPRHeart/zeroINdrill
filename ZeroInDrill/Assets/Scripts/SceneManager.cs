@@ -9,11 +9,14 @@ public class SceneManager : MonoBehaviour
     public GameObject LevelOne;
     public TMPro.TMP_Text scoreLabel;
     public TMPro.TMP_Text shotsLabel;
-    public TMPro.TMP_Text timeLabel;
     public TMPro.TMP_Text infoLabel;
-    public TMPro.TMP_Text levelLabel;
     public TMPro.TMP_Text gameOverLabel;
     public UnityEngine.UI.RawImage reticle;
+    public UnityEngine.UI.Image countDown;
+
+    public Color cdColor1 = Color.green;
+    public Color cdColor2 = Color.yellow;
+    public Color cdColor3 = Color.red;
 
     private GameObject playerPlatformObject;
     private PlatformMove platformScript;
@@ -47,7 +50,17 @@ public class SceneManager : MonoBehaviour
         if(inLevel) {
             if(timeLeft > 0) {
                 timeLeft -= Time.deltaTime;
-                updateTimeLabel("Time: " + Mathf.FloorToInt(timeLeft));
+                float fill = timeLeft / levelTime;
+                countDown.fillAmount = fill;
+                if (fill > 2f/3f){
+                    countDown.color = cdColor1;
+                } else if (fill > 1f/3){
+                    countDown.color = cdColor2;
+                } else
+                {
+                    countDown.color = cdColor3;
+                }
+                
             }
             else {
                 StartCoroutine(endLevel());
@@ -67,11 +80,11 @@ public class SceneManager : MonoBehaviour
             }
         }
     }
-
+    
     IEnumerator setLevel(float totalTime, int totalShots, int levelScoreThreshold) {
         infoLabel.text = "Level " + level + ":\n Get " + levelScoreThreshold + " points to advance";
         StartCoroutine(setPlatformLevel());
-        yield return new WaitForSeconds(3f);
+        yield return new WaitUntil(platformScript.AtLevel);
         gameOverLabel.text = "";
         if (level == 1 && !music.isPlaying){
             music.Play();
@@ -80,22 +93,25 @@ public class SceneManager : MonoBehaviour
         currentLevelObject.transform.position = transform.position;
         currentLevelObject.GetComponent<LevelOneManager>().manager = this;
         currentLevelRing = Instantiate(LevelRing);
-        currentLevelRing.transform.position = playerPlatformObject.transform.GetChild(1).transform.position;
+        currentLevelRing.transform.position = transform.position;
         infoLabel.text = "";
         scoreThreshold = levelScoreThreshold;
-        timeLeft = totalTime;
+        levelTime = totalTime;
+        timeLeft = levelTime;
         score = 0;
-        updateTimeLabel("Time: " + timeLeft);
+        
         shotsRemaining = totalShots;
         updateShotsLabel(shotsRemaining.ToString());
         
         updateScoreLabel("Score: " + score);
+        countDown.fillAmount = 1;
+        countDown.color = cdColor1;
         StartCoroutine(nextPrompt());
         
     }
-    IEnumerator nextPrompt(string txt = "Click to Begin")
+    IEnumerator nextPrompt()
     {
-        gameOverLabel.text = txt;
+        gameOverLabel.text = "Click to Begin\n\nL" + level.ToString();
         waiting = true;
         yield return new WaitUntil(notWaiting);
         gameOverLabel.text = "3";
@@ -105,11 +121,19 @@ public class SceneManager : MonoBehaviour
         gameOverLabel.text = "1";
         yield return new WaitForSeconds(1);
         gameOverLabel.text = "";
+        infoLabel.text = "L" + level;
         inLevel = true;
     }
     bool notWaiting()
     {
         return !waiting;
+    }
+    IEnumerator temporaryRing(Vector3 position)
+    {
+        GameObject ring = Instantiate(LevelRing);
+        ring.transform.position = position;
+        yield return new WaitForSeconds(4);
+        Destroy(ring);
     }
 
     private IEnumerator setPlatformLevel() {
@@ -117,6 +141,10 @@ public class SceneManager : MonoBehaviour
         float iLerp = platformScript.lerpConstant;
         platformScript.speed = 0.0001f;
         platformScript.lerpConstant = 0.025f;
+        for (int i = 20; i < 50; i += 7)
+        {
+            StartCoroutine(temporaryRing(platformScript.stage + Vector3.up*i));
+        }
         platformScript.stage = transform.position + Vector3.down * 1.5f;
         yield return new WaitUntil(platformScript.AtLevel);
         platformScript.speed = iSpeed;
@@ -126,14 +154,13 @@ public class SceneManager : MonoBehaviour
     public IEnumerator endLevel() {
         inLevel = false;
         timeLeft = -1;
-        updateTimeLabel("");
         shotsRemaining = -1;
         updateShotsLabel("");
         updateScoreLabel("");
         infoLabel.text = "Level Over!";
         yield return new WaitForSeconds(1f);
-        
-        if(score >= scoreThreshold) {
+        totalScore += score;
+        if (score >= scoreThreshold) {
             if (currentLevelObject != null)
             {
                 currentLevelObject.GetComponent<LevelOneManager>().deleteLevel();
@@ -141,7 +168,7 @@ public class SceneManager : MonoBehaviour
                 Destroy(currentLevelRing.gameObject);
             }
             this.transform.position += transform.up*50;
-            totalScore += score;
+            
             level++;
             switch (level) {
             case 1:
@@ -204,9 +231,5 @@ public class SceneManager : MonoBehaviour
 
     void updateShotsLabel(string text) {
         shotsLabel.text = text;
-    }
-
-    void updateTimeLabel(string text) {
-        timeLabel.text = text;
     }
 }

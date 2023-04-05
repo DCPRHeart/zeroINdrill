@@ -237,11 +237,13 @@ MonoBehaviour:
   LevelOne: {fileID: 8105778599065963318, guid: e371886c4dd0445d69b3d525a1f96c08, type: 3}
   scoreLabel: {fileID: 241229518}
   shotsLabel: {fileID: 1759741827}
-  timeLabel: {fileID: 853791158}
   infoLabel: {fileID: 853791158}
-  levelLabel: {fileID: 883326080}
   gameOverLabel: {fileID: 146145626}
   reticle: {fileID: 742682248}
+  countDown: {fileID: 1561510758}
+  cdColor1: {r: 0.5137255, g: 1, b: 0.33333334, a: 1}
+  cdColor2: {r: 0.9372549, g: 1, b: 0.2784314, a: 1}
+  cdColor3: {r: 1, g: 0.19215687, b: 0.13725491, a: 1}
 --- !u!4 &220407455
 Transform:
   m_ObjectHideFlags: 0
@@ -386,15 +388,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &883326080 stripped
+--- !u!114 &1561510758 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1578507993431100803, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1561510758, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
   m_PrefabInstance: {fileID: 5751290035476149855}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1759741827 stripped
@@ -415,13 +417,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 12398833511516190, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
-      propertyPath: m_Name
-      value: GameOver
+    - target: {fileID: 1561510758, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
+      propertyPath: m_Color.b
+      value: 0.13679248
       objectReference: {fileID: 0}
-    - target: {fileID: 3657760932523170963, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
-      propertyPath: m_Name
-      value: Reticle
+    - target: {fileID: 1561510758, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
+      propertyPath: m_Color.g
+      value: 0.18961616
+      objectReference: {fileID: 0}
+    - target: {fileID: 1561510758, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3657760933520562187, guid: 7433553f8dad9894a8092b5542ce568e, type: 3}
       propertyPath: m_Pivot.x
